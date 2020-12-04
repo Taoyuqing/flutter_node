@@ -30,11 +30,20 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> _strList = ["your name", "your age", "your phone number"];
-  Map<String, TextEditingController> _textEditingControllers = {};
+  Map<String, TextEditingController> _textFieldController = {};
+  Map<String, FocusNode> _textFocusNode = {};
+  Map<String, Widget> _textField = {};
+  List<Widget> _textFieldList = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -62,15 +71,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Text('add'),
               ),
-              RaisedButton(
-                onPressed: () {
-                  _textEditingControllers["map3"].value =
-                      _textEditingControllers["map3"]
-                          .value
-                          .copyWith(text: "000000000000000000000");
-                },
-                child: Text('confirm'),
-              )
             ],
           ),
         ),
@@ -79,31 +79,43 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Widget> _createTextField() {
-    List<Widget> widgetList = [];
-
     for (var i = 0; i < _strList.length; i++) {
-      TextEditingController controller = TextEditingController();
-      _textEditingControllers.putIfAbsent('map$i', () => controller);
-      
-      Widget textInput = Container(
-        width: 200,
-        height: 40,
-        margin: EdgeInsets.only(top: 10),
-        child: TextField(
-          controller: _textEditingControllers['map$i'],
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.account_circle),
-            contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            labelText: _strList[i],
-            labelStyle: TextStyle(fontSize: 12.0),
-            hintText: _strList[i],
-            hintStyle: TextStyle(fontSize: 12.0),
-            border: OutlineInputBorder(),
+      _textFieldController.putIfAbsent('editingController$i',
+          () => TextEditingController(text: _strList[i]));
+      _textFocusNode.putIfAbsent('focusNode$i', () => FocusNode());
+      _textField.putIfAbsent(
+        'textInput$i',
+        () => Container(
+          width: 200,
+          height: 40,
+          margin: EdgeInsets.only(top: 10),
+          child: TextField(
+            readOnly: true,
+            showCursor: true,
+            focusNode: _textFocusNode['focusNode$i'],
+            controller: _textFieldController['editingController$i'],
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.account_circle),
+              contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              labelText: _strList[i],
+              labelStyle: TextStyle(fontSize: 12.0),
+              hintText: _strList[i],
+              hintStyle: TextStyle(fontSize: 12.0),
+              border: OutlineInputBorder(),
+            ),
           ),
         ),
       );
-      widgetList.add(textInput);
     }
-    return widgetList;
+    List<String> keys = _textField.keys.toList();
+
+    for (var i = 0; i < keys.length; i++) {
+      if (_textFieldList.length == 0 ||
+          !_textFieldList.contains(_textField['textInput$i'])) {
+            print('object'*10);
+            _textFieldList.add(_textField['textInput$i']);
+          }
+    }
+    return _textFieldList;
   }
 }
