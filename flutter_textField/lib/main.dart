@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    _disposeTextField();
   }
 
   @override
@@ -109,13 +110,23 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     List<String> keys = _textField.keys.toList();
 
-    for (var i = 0; i < keys.length; i++) {
+    for (int i = 0; i < keys.length; i++) {
       if (_textFieldList.length == 0 ||
           !_textFieldList.contains(_textField['textInput$i'])) {
-            print('object'*10);
-            _textFieldList.add(_textField['textInput$i']);
-          }
+        _textFieldList.add(_textField['textInput$i']);
+      }
     }
     return _textFieldList;
+  }
+
+  _disposeTextField() {
+    List<String> controllers = _textFieldController.keys.toList();
+    for (String item in controllers) {
+      _textFieldController[item].dispose();
+    }
+    List<String> focusNode = _textFocusNode.keys.toList();
+    for (String item in focusNode) {
+      _textFocusNode[item].dispose();
+    }
   }
 }
